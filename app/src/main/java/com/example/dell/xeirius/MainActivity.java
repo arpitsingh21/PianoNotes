@@ -1,77 +1,189 @@
 package com.example.dell.xeirius;
 
+import android.content.Context;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
+import android.os.AsyncTask;
 import android.os.CountDownTimer;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+
+import static com.example.dell.xeirius.R.raw.a1;
+
 public class MainActivity extends AppCompatActivity {
-    static MediaPlayer mp=new MediaPlayer();
-    static Button play,stop;
-    static TextView notes;
-    //File descriptor value
-    int ress[]={R.raw.a1,R.raw.a1s,R.raw.b1,R.raw.c1,R.raw.c1s,R.raw.c2,R.raw.d1,R.raw.d1s,R.raw.e1,R.raw.f1,R.raw.f1s,R.raw.g1,R.raw.g1s};
-    //data to be matched
-    String r[]={"A1","A1s","B1","C1","C1s","C2","D1","D1s","E1","F1","F1s","G1","G1s"};
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    static Button play, stop;
+    static EditText notes;
+boolean status=true;
+         MediaPlayer mediaPlayer;
+         String no [];
+         int currentTrack = 0;
+        int res[];
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        notes=(EditText)findViewById(R.id.editText);
-        play=(Button)findViewById(R.id.button);
-        stop=(Button)findViewById(R.id.button2);
-        play.setOnClickListener(new View.OnClickListener() {
-            @Override
+            play=(Button)findViewById(R.id.button);
+            stop=(Button)findViewById(R.id.button2);
+            stop.setEnabled(false);
+            notes=(EditText)findViewById(R.id.editText);
+            play.setOnClickListener(new View.OnClickListener() {
+                @Override
             public void onClick(View view) {
-                try {
-                    play(view);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        stop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+               if(mediaPlayer!=null)
+               {
 
-                try {
-              //  mp.release();
-mp=null;
-                 //  mp.stop();
+                   mediaPlayer=null;
+
                }
-               catch (IllegalStateException e){e.printStackTrace();}
-            }
+               play.setEnabled(false);
+
+                    String s = notes.getText().toString();
+                   String[] s1 = s.split(" ");
+                    status=true;
+                    res=new int[s1.length];
+
+                    no=s1;
+              try {
+                  for (int i = 0; i < s1.length; i++) {
+                      switch (s1[i]) {
+                          case "A1":
+                              res[i]=R.raw.a1;
+                              break;
+                          case "A1s":
+                              res[i]=R.raw.a1s;
+                              break;
+                          case "B1":
+                              res[i]=R.raw.b1;
+                              break;
+                          case "C1":
+                              res[i]=R.raw.c1;
+                              break;
+                          case "C1s":
+                              res[i]=R.raw.c1s;
+                              break;
+                          case "D1":
+                              res[i]=R.raw.d1;
+                              break;
+                          case "D1s":
+                              res[i]=R.raw.d1s;
+                              break;
+                          case "E1":
+                              res[i]=R.raw.e1;
+                              break;
+                          case "F1":
+                              res[i]=R.raw.f1;
+                              break;
+                          case "F1s":
+                              res[i]=R.raw.f1s;
+                              break;
+                          case "G1":
+                              res[i]=R.raw.g1;
+                              break;
+                          case "G1s":
+                              res[i]=R.raw.g1s;
+                              break;
+                          case ".":Thread.sleep(50);
+                             break;
+
+                      }
+                  }
+
+
+
+    if (res[currentTrack] == 0) {
+        ++currentTrack;
+    }
+               mediaPlayer = MediaPlayer.create(MainActivity.this, res[currentTrack]);
+                  mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                          @Override
+                                  public void onCompletion(MediaPlayer arg0) {
+try{
+
+                              arg0.release();
+                              if (currentTrack < no.length) {
+                                  currentTrack++;
+                                  if (res[currentTrack] == 0 && status) {
+
+                                      while (res[currentTrack] == 0) {
+
+                                          currentTrack++;
+                                      }
+                                      try {
+                                          Thread.sleep(50);
+                                      } catch (InterruptedException e) {
+                                          e.printStackTrace();
+                                      }
+
+                                      arg0 = MediaPlayer.create(MainActivity.this, res[currentTrack]);
+                                      arg0.setOnCompletionListener(this);
+                                      arg0.start();
+
+
+                                  } else {
+                                      if (status) {
+                                          arg0 = MediaPlayer.create(MainActivity.this, res[currentTrack]);
+                                          arg0.setOnCompletionListener(this);
+                                          arg0.start();
+                                      } else {
+                                      }
+                                  }
+
+
+                              }
+                              if (currentTrack == res.length) {
+                                  Toast.makeText(MainActivity.this, "In this", Toast.LENGTH_SHORT).show();
+                                  currentTrack = 0;
+                              }
+
+                          }
+                          catch(ArrayIndexOutOfBoundsException e){e.printStackTrace();
+                          currentTrack=0;
+                          }
+
+                          }
+
+
+               });
+
+                  stop.setEnabled(true);
+             mediaPlayer.start();
+
+
+
+              }
+              catch(Exception e){e.printStackTrace();}
+
+
+                }
         });
 
-    }
+            stop.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        status=false;
+currentTrack=-1;
+                        stop.setEnabled(false);
+play.setEnabled(true);
+                    }
+                    catch(IllegalStateException e){e.printStackTrace();}
+                }
+            });
 
-    public void play(View view)throws Exception {
-        String s;
-        s = notes.getText().toString();
-        String s1[] = s.split(" ");
-        for(int i=0;i<s1.length;i++) {
-            for (int j = 0; j < 13; j++) {
-                if(s1[i].equals(r[j]))
-                {
-                    sync(ress[j]);
-                }
-                else if(s1[i].equals("."))
-                {
-                    Thread.sleep(30);
-                }
-            }
-        }
-    }
-    void sync(int val)throws Exception
-    {
-        mp = MediaPlayer.create(this, val);
-        mp.start();
-        Thread.sleep(200);
-        mp.release();
+
     }
 }
+
