@@ -51,14 +51,14 @@ boolean status=true;
                play.setEnabled(false);
 
                     String s = notes.getText().toString();
-                   String[] s1 = s.split(" ");
+                   String[] s1 = s.split(" "); // splitting the notes using " "
                     status=true;
                     res=new int[s1.length];
 
-                    no=s1;
+                    no=s1; //copying length of the notes array
               try {
                   for (int i = 0; i < s1.length; i++) {
-                      switch (s1[i]) {
+                      switch (s1[i]) {                          // fill the array with notes in textview
                           case "A1":
                               res[i]=R.raw.a1;
                               break;
@@ -100,17 +100,14 @@ boolean status=true;
 
                       }
                   }
-
-
-
-    if (res[currentTrack] == 0) {
-        ++currentTrack;
-    }
-               mediaPlayer = MediaPlayer.create(MainActivity.this, res[currentTrack]);
+          if (res[currentTrack] == 0) {
+                  ++currentTrack;
+              }
+                  mediaPlayer = MediaPlayer.create(MainActivity.this, res[currentTrack]); //Playing the first note in the array
                   mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                           @Override
                                   public void onCompletion(MediaPlayer arg0) {
-try{
+                   try{
 
                               arg0.release();
                               if (currentTrack < no.length) {
@@ -128,7 +125,7 @@ try{
                                       }
 
                                       arg0 = MediaPlayer.create(MainActivity.this, res[currentTrack]);
-                                      arg0.setOnCompletionListener(this);
+                                      arg0.setOnCompletionListener(this);//Playing the following note in array
                                       arg0.start();
 
 
@@ -137,14 +134,11 @@ try{
                                           arg0 = MediaPlayer.create(MainActivity.this, res[currentTrack]);
                                           arg0.setOnCompletionListener(this);
                                           arg0.start();
-                                      } else {
                                       }
                                   }
-
-
                               }
                               if (currentTrack == res.length) {
-                                  Toast.makeText(MainActivity.this, "In this", Toast.LENGTH_SHORT).show();
+
                                   currentTrack = 0;
                               }
 
@@ -158,8 +152,8 @@ try{
 
                });
 
-                  stop.setEnabled(true);
-             mediaPlayer.start();
+                       stop.setEnabled(true);
+                       mediaPlayer.start();
 
 
 
@@ -174,10 +168,10 @@ try{
                 @Override
                 public void onClick(View view) {
                     try {
-                        status=false;
-currentTrack=-1;
-                        stop.setEnabled(false);
-play.setEnabled(true);
+                        status=false;           //updating the current track to initial
+                         currentTrack=-1;
+                        stop.setEnabled(false);   //Setting stop button false and play button true
+                        play.setEnabled(true);
                     }
                     catch(IllegalStateException e){e.printStackTrace();}
                 }
