@@ -51,116 +51,124 @@ boolean status=true;
                play.setEnabled(false);
 
                     String s = notes.getText().toString();
+
+               if (s.equals(""))
+               {
+                   Toast.makeText(MainActivity.this, "Please Enter Notes", Toast.LENGTH_SHORT).show();
+               }
+               else {
                    String[] s1 = s.split(" "); // splitting the notes using " "
-                    status=true;
-                    res=new int[s1.length];
+                   status = true;
+                   res = new int[s1.length];
 
-                    no=s1; //copying length of the notes array
-              try {
-                  for (int i = 0; i < s1.length; i++) {
-                      switch (s1[i]) {                          // fill the array with notes in textview
-                          case "A1":
-                              res[i]=R.raw.a1;
-                              break;
-                          case "A1s":
-                              res[i]=R.raw.a1s;
-                              break;
-                          case "B1":
-                              res[i]=R.raw.b1;
-                              break;
-                          case "C1":
-                              res[i]=R.raw.c1;
-                              break;
-                          case "C1s":
-                              res[i]=R.raw.c1s;
-                              break;
-                          case "D1":
-                              res[i]=R.raw.d1;
-                              break;
-                          case "D1s":
-                              res[i]=R.raw.d1s;
-                              break;
-                          case "E1":
-                              res[i]=R.raw.e1;
-                              break;
-                          case "F1":
-                              res[i]=R.raw.f1;
-                              break;
-                          case "F1s":
-                              res[i]=R.raw.f1s;
-                              break;
-                          case "G1":
-                              res[i]=R.raw.g1;
-                              break;
-                          case "G1s":
-                              res[i]=R.raw.g1s;
-                              break;
-                          case ".":Thread.sleep(50);
-                             break;
+                   no = s1; //copying length of the notes array
 
-                      }
-                  }
-          if (res[currentTrack] == 0) {
-                  ++currentTrack;
-              }
-                  mediaPlayer = MediaPlayer.create(MainActivity.this, res[currentTrack]); //Playing the first note in the array
-                  mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                          @Override
-                                  public void onCompletion(MediaPlayer arg0) {
-                   try{
+                   try {
+                       for (int i = 0; i < s1.length; i++) {
+                           switch (s1[i]) {                          // fill the array with notes in textview
+                               case "A1":
+                                   res[i] = R.raw.a1;
+                                   break;
+                               case "A1s":
+                                   res[i] = R.raw.a1s;
+                                   break;
+                               case "B1":
+                                   res[i] = R.raw.b1;
+                                   break;
+                               case "C1":
+                                   res[i] = R.raw.c1;
+                                   break;
+                               case "C1s":
+                                   res[i] = R.raw.c1s;
+                                   break;
+                               case "D1":
+                                   res[i] = R.raw.d1;
+                                   break;
+                               case "D1s":
+                                   res[i] = R.raw.d1s;
+                                   break;
+                               case "E1":
+                                   res[i] = R.raw.e1;
+                                   break;
+                               case "F1":
+                                   res[i] = R.raw.f1;
+                                   break;
+                               case "F1s":
+                                   res[i] = R.raw.f1s;
+                                   break;
+                               case "G1":
+                                   res[i] = R.raw.g1;
+                                   break;
+                               case "G1s":
+                                   res[i] = R.raw.g1s;
+                                   break;
+                               case ".":
+                                   Thread.sleep(50);
+                                   break;
 
-                              arg0.release();
-                              if (currentTrack < no.length) {
-                                  currentTrack++;
-                                  if (res[currentTrack] == 0 && status) {
+                           }
+                       }
+                       if (res[currentTrack] == 0) {
+                           ++currentTrack;
+                       }
+                       mediaPlayer = MediaPlayer.create(MainActivity.this, res[currentTrack]); //Playing the first note in the array
+                       mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                           @Override
+                           public void onCompletion(MediaPlayer arg0) {
+                               try {
 
-                                      while (res[currentTrack] == 0) {
+                                   arg0.release();
+                                   if (currentTrack < no.length) {
+                                       currentTrack++;
+                                       if (res[currentTrack] == 0 && status) {
 
-                                          currentTrack++;
-                                      }
-                                      try {
-                                          Thread.sleep(50);
-                                      } catch (InterruptedException e) {
-                                          e.printStackTrace();
-                                      }
+                                           while (res[currentTrack] == 0) {
 
-                                      arg0 = MediaPlayer.create(MainActivity.this, res[currentTrack]);
-                                      arg0.setOnCompletionListener(this);//Playing the following note in array
-                                      arg0.start();
+                                               currentTrack++;
+                                           }
+                                           try {
+                                               Thread.sleep(50);
+                                           } catch (InterruptedException e) {
+                                               e.printStackTrace();
+                                           }
 
-
-                                  } else {
-                                      if (status) {
-                                          arg0 = MediaPlayer.create(MainActivity.this, res[currentTrack]);
-                                          arg0.setOnCompletionListener(this);
-                                          arg0.start();
-                                      }
-                                  }
-                              }
-                              if (currentTrack == res.length) {
-
-                                  currentTrack = 0;
-                              }
-
-                          }
-                          catch(ArrayIndexOutOfBoundsException e){e.printStackTrace();
-                          currentTrack=0;
-                          }
-
-                          }
+                                           arg0 = MediaPlayer.create(MainActivity.this, res[currentTrack]);
+                                           arg0.setOnCompletionListener(this);//Playing the following note in array
+                                           arg0.start();
 
 
-               });
+                                       } else {
+                                           if (status) {
+                                               arg0 = MediaPlayer.create(MainActivity.this, res[currentTrack]);
+                                               arg0.setOnCompletionListener(this);
+                                               arg0.start();
+                                           }
+                                       }
+                                   }
+                                   if (currentTrack == res.length) {
+
+                                       currentTrack = 0;
+                                   }
+
+                               } catch (ArrayIndexOutOfBoundsException e) {
+                                   e.printStackTrace();
+                                   currentTrack = 0;
+                               }
+
+                           }
+
+
+                       });
 
                        stop.setEnabled(true);
                        mediaPlayer.start();
 
 
+                   } catch (Exception e) {
+                       e.printStackTrace();
+                   }
 
-              }
-              catch(Exception e){e.printStackTrace();}
-
-
+               }
                 }
         });
 
